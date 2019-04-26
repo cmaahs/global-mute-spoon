@@ -49,18 +49,18 @@ else
     echo 'hs.loadSpoon("GlobalMute")' >> ~/.hammerspoon/init.lua
 fi
 
-if grep -Fxq 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png",})' ~/.hammerspoon/init.lua
-then
-    echo "line already exists."
-else
-    echo 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png",})' >> ~/.hammerspoon/init.lua
-fi
-
 if grep -Fxq 'spoon.GlobalMute:bindHotkeys({ unmute = {lesshyper, "u"}, mute   = {lesshyper, "m"}, toggle = {hyper, "space"} })' ~/.hammerspoon/init.lua
 then
     echo "line already exists."
 else
     echo 'spoon.GlobalMute:bindHotkeys({ unmute = {lesshyper, "u"}, mute   = {lesshyper, "m"}, toggle = {hyper, "space"} })' >> ~/.hammerspoon/init.lua
+fi
+
+if grep -Fxq 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png",})' ~/.hammerspoon/init.lua
+then
+    echo "line already exists."
+else
+    echo 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png",})' >> ~/.hammerspoon/init.lua
 fi
 ```
 
@@ -72,14 +72,14 @@ The configuration file looks like this:
 local hyper     = {"ctrl", "alt", "cmd"}
 local lesshyper = {"ctrl", "alt"}
 hs.loadSpoon("GlobalMute")
-spoon.GlobalMute:configure({
-  unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
-  mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
-})
 spoon.GlobalMute:bindHotkeys({
   unmute = {lesshyper, "u"},
   mute   = {lesshyper, "m"},
   toggle = {hyper, "space"}
+})
+spoon.GlobalMute:configure({
+  unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
+  mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
 })
 spoon.GlobalMute._logger.level = 3
 ```
