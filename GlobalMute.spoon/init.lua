@@ -188,6 +188,8 @@ function obj:configure(conf)
       self.mute_bg = confitem
     end
   end
+  self:mute(true)
+  self.muted = true
 end
 
 
