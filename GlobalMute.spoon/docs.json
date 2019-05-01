@@ -12,10 +12,12 @@
     "Variable" : [
       {
         "doc" : "Accessible variable to adjust the logging level",
-        "desc" : "Accessible variable to adjust the logging level",
-        "def" : "GlobalMute.logger",
         "stripped_doc" : [
           "Accessible variable to adjust the logging level"
+        ],
+        "name" : "logger",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -25,20 +27,18 @@
         "returns" : [
 
         ],
-        "name" : "logger",
-        "parameters" : [
-
-        ]
+        "desc" : "Accessible variable to adjust the logging level",
+        "def" : "GlobalMute.logger"
       }
     ],
     "stripped_doc" : [
 
     ],
-    "type" : "Module",
+    "desc" : "With this Spoon you will be able ot globally mute and unmute your Microphone devices.",
     "Deprecated" : [
 
     ],
-    "desc" : "With this Spoon you will be able ot globally mute and unmute your Microphone devices.",
+    "type" : "Module",
     "Constructor" : [
 
     ],
@@ -46,10 +46,12 @@
     "Method" : [
       {
         "doc" : "Mute all system sound input, force to mute",
-        "desc" : "Mute all system sound input, force to mute",
-        "def" : "GlobalMute:toggle()",
         "stripped_doc" : [
           "Mute all system sound input, force to mute"
+        ],
+        "name" : "toggle",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -59,17 +61,17 @@
         "returns" : [
 
         ],
-        "name" : "toggle",
-        "parameters" : [
-
-        ]
+        "desc" : "Mute all system sound input, force to mute",
+        "def" : "GlobalMute:toggle()"
       },
       {
         "doc" : "Mute all system sound input, force to mute",
-        "desc" : "Mute all system sound input, force to mute",
-        "def" : "GlobalMute:mute(force)",
         "stripped_doc" : [
           "Mute all system sound input, force to mute"
+        ],
+        "name" : "mute",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -79,17 +81,17 @@
         "returns" : [
 
         ],
-        "name" : "mute",
-        "parameters" : [
-
-        ]
+        "desc" : "Mute all system sound input, force to mute",
+        "def" : "GlobalMute:mute(force)"
       },
       {
         "doc" : "UnMute all system sound input",
-        "desc" : "UnMute all system sound input",
-        "def" : "GlobalMute:unmute()",
         "stripped_doc" : [
           "UnMute all system sound input"
+        ],
+        "name" : "unmute",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -99,26 +101,34 @@
         "returns" : [
 
         ],
-        "name" : "unmute",
-        "parameters" : [
-
-        ]
+        "desc" : "UnMute all system sound input",
+        "def" : "GlobalMute:unmute()"
       },
       {
-        "doc" : "Binds hotkeys for CacadeWindows\n\nParameters:\n * applist - A table containing hotkey details for defined applications:\n\nA configuration example:\n``` lua\nlocal hyper = {\"ctrl\", \"alt\", \"cmd\"}\nhs.loadSpoon(\"GlobalMute\")\nspoon.GlobalMute:configure({\n  unmute_background = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Red%20Orange.png',\n  mute_background   = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Turquoise%20Green.png',\n})\nspoon.GlobalMute:bindHotkeys({\n unmute = {hyper, \"u\"},\n mute   = {hyper, \"m\"},\n toggle = {hyper, \"space\"}\n})\nspoon.GlobalMute._logger.level = 3\n```",
-        "desc" : "Binds hotkeys for CacadeWindows",
-        "def" : "GlobalMute:bindHotkeys()",
+        "doc" : "Callback function when audio input events happen",
         "stripped_doc" : [
-          "Binds hotkeys for CacadeWindows",
-          ""
+          "Callback function when audio input events happen"
+        ],
+        "name" : "microphone_changes",
+        "parameters" : [
+
         ],
         "notes" : [
 
         ],
-        "signature" : "GlobalMute:bindHotkeys()",
+        "signature" : "GlobalMute:microphone_changes(device_uid, event_name, event_scope, event_element)",
         "type" : "Method",
         "returns" : [
 
+        ],
+        "desc" : "Callback function when audio input events happen",
+        "def" : "GlobalMute:microphone_changes(device_uid, event_name, event_scope, event_element)"
+      },
+      {
+        "doc" : "Binds hotkeys for GlobalMute\n\nParameters:\n * applist - A table containing hotkey details for defined applications:\n\nA configuration example:\n``` lua\nlocal hyper = {\"ctrl\", \"alt\", \"cmd\"}\nhs.loadSpoon(\"GlobalMute\")\nspoon.GlobalMute:configure({\n  unmute_background = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Red%20Orange.png',\n  mute_background   = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Turquoise%20Green.png',\n  enforce_desired_state = true,\n})\nspoon.GlobalMute:bindHotkeys({\n unmute = {hyper, \"u\"},\n mute   = {hyper, \"m\"},\n toggle = {hyper, \"space\"}\n})\nspoon.GlobalMute._logger.level = 3\n```",
+        "stripped_doc" : [
+          "Binds hotkeys for GlobalMute",
+          ""
         ],
         "name" : "bindHotkeys",
         "parameters" : [
@@ -131,6 +141,7 @@
           "spoon.GlobalMute:configure({",
           "  unmute_background = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Red%20Orange.png',",
           "  mute_background   = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Turquoise%20Green.png',",
+          "  enforce_desired_state = true,",
           "})",
           "spoon.GlobalMute:bindHotkeys({",
           " unmute = {hyper, \"u\"},",
@@ -139,14 +150,26 @@
           "})",
           "spoon.GlobalMute._logger.level = 3",
           "```"
-        ]
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "GlobalMute:bindHotkeys()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "desc" : "Binds hotkeys for GlobalMute",
+        "def" : "GlobalMute:bindHotkeys()"
       },
       {
         "doc" : "Set spoon level configuration",
-        "desc" : "Set spoon level configuration",
-        "def" : "GlobalMute:configure(conf)",
         "stripped_doc" : [
           "Set spoon level configuration"
+        ],
+        "name" : "configure",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -156,17 +179,17 @@
         "returns" : [
 
         ],
-        "name" : "configure",
-        "parameters" : [
-
-        ]
+        "desc" : "Set spoon level configuration",
+        "def" : "GlobalMute:configure(conf)"
       },
       {
         "doc" : "Currently does nothing (implemented so that treating this Spoon like others won't cause errors).",
-        "desc" : "Currently does nothing (implemented so that treating this Spoon like others won't cause errors).",
-        "def" : "GlobalMute:init()",
         "stripped_doc" : [
           "Currently does nothing (implemented so that treating this Spoon like others won't cause errors)."
+        ],
+        "name" : "init",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -176,25 +199,22 @@
         "returns" : [
 
         ],
-        "name" : "init",
-        "parameters" : [
-
-        ]
+        "desc" : "Currently does nothing (implemented so that treating this Spoon like others won't cause errors).",
+        "def" : "GlobalMute:init()"
       }
     ],
     "Command" : [
 
     ],
-    "Field" : [
-
-    ],
     "items" : [
       {
         "doc" : "Accessible variable to adjust the logging level",
-        "desc" : "Accessible variable to adjust the logging level",
-        "def" : "GlobalMute.logger",
         "stripped_doc" : [
           "Accessible variable to adjust the logging level"
+        ],
+        "name" : "logger",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -204,26 +224,14 @@
         "returns" : [
 
         ],
-        "name" : "logger",
-        "parameters" : [
-
-        ]
+        "desc" : "Accessible variable to adjust the logging level",
+        "def" : "GlobalMute.logger"
       },
       {
-        "doc" : "Binds hotkeys for CacadeWindows\n\nParameters:\n * applist - A table containing hotkey details for defined applications:\n\nA configuration example:\n``` lua\nlocal hyper = {\"ctrl\", \"alt\", \"cmd\"}\nhs.loadSpoon(\"GlobalMute\")\nspoon.GlobalMute:configure({\n  unmute_background = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Red%20Orange.png',\n  mute_background   = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Turquoise%20Green.png',\n})\nspoon.GlobalMute:bindHotkeys({\n unmute = {hyper, \"u\"},\n mute   = {hyper, \"m\"},\n toggle = {hyper, \"space\"}\n})\nspoon.GlobalMute._logger.level = 3\n```",
-        "desc" : "Binds hotkeys for CacadeWindows",
-        "def" : "GlobalMute:bindHotkeys()",
+        "doc" : "Binds hotkeys for GlobalMute\n\nParameters:\n * applist - A table containing hotkey details for defined applications:\n\nA configuration example:\n``` lua\nlocal hyper = {\"ctrl\", \"alt\", \"cmd\"}\nhs.loadSpoon(\"GlobalMute\")\nspoon.GlobalMute:configure({\n  unmute_background = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Red%20Orange.png',\n  mute_background   = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Turquoise%20Green.png',\n  enforce_desired_state = true,\n})\nspoon.GlobalMute:bindHotkeys({\n unmute = {hyper, \"u\"},\n mute   = {hyper, \"m\"},\n toggle = {hyper, \"space\"}\n})\nspoon.GlobalMute._logger.level = 3\n```",
         "stripped_doc" : [
-          "Binds hotkeys for CacadeWindows",
+          "Binds hotkeys for GlobalMute",
           ""
-        ],
-        "notes" : [
-
-        ],
-        "signature" : "GlobalMute:bindHotkeys()",
-        "type" : "Method",
-        "returns" : [
-
         ],
         "name" : "bindHotkeys",
         "parameters" : [
@@ -236,6 +244,7 @@
           "spoon.GlobalMute:configure({",
           "  unmute_background = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Red%20Orange.png',",
           "  mute_background   = 'file:\/\/\/Library\/Desktop%20Pictures\/Solid%20Colors\/Turquoise%20Green.png',",
+          "  enforce_desired_state = true,",
           "})",
           "spoon.GlobalMute:bindHotkeys({",
           " unmute = {hyper, \"u\"},",
@@ -244,14 +253,26 @@
           "})",
           "spoon.GlobalMute._logger.level = 3",
           "```"
-        ]
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "GlobalMute:bindHotkeys()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "desc" : "Binds hotkeys for GlobalMute",
+        "def" : "GlobalMute:bindHotkeys()"
       },
       {
         "doc" : "Set spoon level configuration",
-        "desc" : "Set spoon level configuration",
-        "def" : "GlobalMute:configure(conf)",
         "stripped_doc" : [
           "Set spoon level configuration"
+        ],
+        "name" : "configure",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -261,17 +282,17 @@
         "returns" : [
 
         ],
-        "name" : "configure",
-        "parameters" : [
-
-        ]
+        "desc" : "Set spoon level configuration",
+        "def" : "GlobalMute:configure(conf)"
       },
       {
         "doc" : "Currently does nothing (implemented so that treating this Spoon like others won't cause errors).",
-        "desc" : "Currently does nothing (implemented so that treating this Spoon like others won't cause errors).",
-        "def" : "GlobalMute:init()",
         "stripped_doc" : [
           "Currently does nothing (implemented so that treating this Spoon like others won't cause errors)."
+        ],
+        "name" : "init",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -281,17 +302,37 @@
         "returns" : [
 
         ],
-        "name" : "init",
+        "desc" : "Currently does nothing (implemented so that treating this Spoon like others won't cause errors).",
+        "def" : "GlobalMute:init()"
+      },
+      {
+        "doc" : "Callback function when audio input events happen",
+        "stripped_doc" : [
+          "Callback function when audio input events happen"
+        ],
+        "name" : "microphone_changes",
         "parameters" : [
 
-        ]
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "GlobalMute:microphone_changes(device_uid, event_name, event_scope, event_element)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "desc" : "Callback function when audio input events happen",
+        "def" : "GlobalMute:microphone_changes(device_uid, event_name, event_scope, event_element)"
       },
       {
         "doc" : "Mute all system sound input, force to mute",
-        "desc" : "Mute all system sound input, force to mute",
-        "def" : "GlobalMute:mute(force)",
         "stripped_doc" : [
           "Mute all system sound input, force to mute"
+        ],
+        "name" : "mute",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -301,17 +342,17 @@
         "returns" : [
 
         ],
-        "name" : "mute",
-        "parameters" : [
-
-        ]
+        "desc" : "Mute all system sound input, force to mute",
+        "def" : "GlobalMute:mute(force)"
       },
       {
         "doc" : "Mute all system sound input, force to mute",
-        "desc" : "Mute all system sound input, force to mute",
-        "def" : "GlobalMute:toggle()",
         "stripped_doc" : [
           "Mute all system sound input, force to mute"
+        ],
+        "name" : "toggle",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -321,17 +362,17 @@
         "returns" : [
 
         ],
-        "name" : "toggle",
-        "parameters" : [
-
-        ]
+        "desc" : "Mute all system sound input, force to mute",
+        "def" : "GlobalMute:toggle()"
       },
       {
         "doc" : "UnMute all system sound input",
-        "desc" : "UnMute all system sound input",
-        "def" : "GlobalMute:unmute()",
         "stripped_doc" : [
           "UnMute all system sound input"
+        ],
+        "name" : "unmute",
+        "parameters" : [
+
         ],
         "notes" : [
 
@@ -341,11 +382,12 @@
         "returns" : [
 
         ],
-        "name" : "unmute",
-        "parameters" : [
-
-        ]
+        "desc" : "UnMute all system sound input",
+        "def" : "GlobalMute:unmute()"
       }
+    ],
+    "Field" : [
+
     ],
     "name" : "GlobalMute"
   }

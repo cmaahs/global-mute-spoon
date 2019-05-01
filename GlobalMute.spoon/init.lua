@@ -50,9 +50,11 @@ package.path = package.path..";Spoons/".. ... ..".spoon/?.lua"
 -- ## Internal
 
 function setbackground(bgfile)
-  local screens = hs.screen.allScreens()
-  for _, newScreen in ipairs(screens) do
-    newScreen:desktopImageURL(bgfile)
+  if bgfile ~= nil then
+    local screens = hs.screen.allScreens()
+    for _, newScreen in ipairs(screens) do
+      newScreen:desktopImageURL(bgfile)
+    end
   end
 end
 
@@ -64,10 +66,20 @@ end
 --- Method
 --- Mute all system sound input, force to mute
 function obj:toggle()
+  is_synced = true
+  for _, device in pairs(hs.audiodevice.allInputDevices()) do
+    is_muted = device:inputMuted()
+    logger.d("Toggle Operation, Device Mute Status Was: ".. tostring(is_muted))
+
+    if is_muted ~= self.muted then
+        is_synced = false
+    end
+  end
+
   if self.muted then
     -- muted, now unmute
     self:unmute()
-  else
+  else -- self.muted = false
     -- unmuted, please mute
     self:mute()
   end
@@ -80,6 +92,7 @@ function obj:mute(force)
   is_changed = force or false
   for _, device in pairs(hs.audiodevice.allInputDevices()) do
       is_muted = device:inputMuted()
+      logger.d("Mute Operation, Device Mute Status Was: ".. tostring(is_muted))
 
       if not is_muted then
           device:setInputMuted(true)
@@ -98,10 +111,11 @@ end
 --- GlobalMute:unmute()
 --- Method
 --- UnMute all system sound input
-function obj:unmute()
-  is_changed = false
+function obj:unmute(force)
+  is_changed = force or false
   for _, device in pairs(hs.audiodevice.allInputDevices()) do
       is_muted = device:inputMuted()
+      logger.d("UnMute Operation, Device Mute Status Was: ".. tostring(is_muted))
 
       if is_muted then
           device:setInputMuted(false)
@@ -117,16 +131,83 @@ function obj:unmute()
   return is_changed
 end
 
+--- GlobalMute:microphone_changes(device_uid, event_name, event_scope, event_element)
+--- Method
+--- Callback function when audio input events happen
+function obj:microphone_changes(device_uid, event_name, event_scope, event_element)
+  logger.d("microphone_changes args: ".. device_uid ..", ".. event_name ..",".. event_scope ..",".. event_element)
+  mic = hs.audiodevice.findDeviceByUID(device_uid)
+  if event_name == 'mute' then
+
+    is_synced = true
+    is_muted = mic:inputMuted()
+
+    if is_muted ~= self.muted then
+        is_synced = false
+    end
+
+    if self.muted then
+      if not is_synced then
+        -- want muted, is now unmuted
+        hs.alert('UNMUTED Externally', self.red)
+        if self.enforce_state then
+          self:mute(true)
+        else
+          self:unmute(true)
+        end
+      end
+    else -- self.muted = false
+      if not is_synced then
+        -- want unmuted, now muted
+        hs.alert('MUTED Externally', self.yellow)
+        if self.enforce_state then
+          self:unmute(true)
+        else
+          self:mute(true)
+        end
+      end
+    end
+  end
+end
+
 -- ## Spoon mechanics (`bind`, `init`)
 
 obj.hotkeys   = {}
-obj.unmute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png'
-obj.mute_bg   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png'
+obj.unmute_bg = nil
+obj.mute_bg   = nil
 obj.muted     = nil
+obj.enforce_state = false
+obj.red = hs.fnutils.copy(hs.alert.defaultStyle)
+obj.red.fillColor = {
+    alpha = 0.7,
+    red   = 1
+}
+obj.red.strokeColor = {
+    alpha = 1,
+    red   = 1
+}
+obj.yellow = hs.fnutils.copy(hs.alert.defaultStyle)
+obj.yellow.fillColor = {
+    alpha = 1,
+    red   = 1,
+    green = 1,
+}
+obj.yellow.strokeColor = {
+    alpha = 1,
+    red   = 0,
+    green = 0,
+    blue  = 0
+}
+obj.yellow.textColor = {
+  alpha = 1,
+  red   = 0,
+  green = 0,
+  blue  = 0
+}
 
 --- GlobalMute:bindHotkeys()
 --- Method
---- Binds hotkeys for CacadeWindows
+--- Binds hotkeys for GlobalMute
 ---
 --- Parameters:
 ---  * applist - A table containing hotkey details for defined applications:
@@ -138,6 +219,7 @@ obj.muted     = nil
 --- spoon.GlobalMute:configure({
 ---   unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
 ---   mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
+---   enforce_desired_state = true,
 ---})
 --- spoon.GlobalMute:bindHotkeys({
 ---  unmute = {hyper, "u"},
@@ -172,7 +254,6 @@ function obj:bindHotkeys(mapping)
       mapping.toggle[2],
       function() self:toggle() end)
   end
-
 end
 
 --- GlobalMute:configure(conf)
@@ -187,19 +268,29 @@ function obj:configure(conf)
     if key == 'mute_background' then
       self.mute_bg = confitem
     end
+    if key == 'enforce_desired_state' then
+      self.enforce_state = confitem
+    end
+  end
+  if self.mute_bg == nil then
+    self.mute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png'
+  end
+  if self.unmute_bg == nil then
+    self.unmute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png'
   end
   self:mute(true)
   self.muted = true
 end
-
 
 --- GlobalMute:init()
 --- Method
 --- Currently does nothing (implemented so that treating this Spoon like others won't cause errors).
 function obj:init()
   -- void (but it could be used to initialize the module)
-  self:mute(true)
-  self.muted = true
+  for _, device in pairs(hs.audiodevice.allInputDevices()) do
+    device:watcherCallback(hs.fnutils.partial(self.microphone_changes, self)):watcherStart()
+    logger.w("Setting up watcher for audio device ".. device:name())
+  end
 end
 
 return obj
