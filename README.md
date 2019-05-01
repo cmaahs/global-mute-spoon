@@ -18,6 +18,15 @@ most application.  As I made modifications, I also figured I would convert it to
 using the [Miro Windows Manager](https://github.com/miromannino/miro-windows-manager) code as my
 baseline.
 
+## Special Note for ZOOM users
+
+ZOOM meetings through me for a bit of loop when I discovered that my MIC was being opened seemingly randomly.  It turns out that
+ZOOM will now unmute your system mic devices at startup, independently of it's own MUTE operation.  Even opening the Settings/Audio
+panel will unmute the system mic devices.  And of course this is BAD.  Bad, bad programmers at Zoom!  There doesn't seem to be a
+way to stop this nefarious behavior through settings.
+
+Presumably other collaboration/conference tools may also practice this behavior, so a callback was added to handle this change.
+
 ## Installation
 
 This will create a ~/tmp temp file in your home directory and clone the repository into it, then move the Spoon to the ~/.hammerspoon/Spoons install directory.  Then add the base loading lines into your ~/.hammerspoon/init.lua file.  Once complete you can clean up the ~/tmp/global-mute-spoon directory as you see fit.
@@ -56,11 +65,11 @@ else
     echo 'spoon.GlobalMute:bindHotkeys({ unmute = {lesshyper, "u"}, mute   = {lesshyper, "m"}, toggle = {hyper, "space"} })' >> ~/.hammerspoon/init.lua
 fi
 
-if grep -Fxq 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png",})' ~/.hammerspoon/init.lua
+if grep -Fxq 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png", enforce_desired_state = true,})' ~/.hammerspoon/init.lua
 then
     echo "line already exists."
 else
-    echo 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png",})' >> ~/.hammerspoon/init.lua
+    echo 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png", enforce_desired_state = true,})' >> ~/.hammerspoon/init.lua
 fi
 ```
 
@@ -80,9 +89,14 @@ spoon.GlobalMute:bindHotkeys({
 spoon.GlobalMute:configure({
   unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
   mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
+  enforce_desired_state = true,
 })
 spoon.GlobalMute._logger.level = 3
 ```
+
+The `enforced_desired_state` is the flag that handles when external forces make changes to the mute at a system level.  If set to
+`false` your background will change and the new mute state will be accepted.  If set to `true` the GlobalMute spoon will make a
+course correction and reset the system mute level on the device to what your current setting was.
 
 ## TODO / Thoughts
 
