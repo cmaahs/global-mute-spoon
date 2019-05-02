@@ -27,6 +27,15 @@ way to stop this nefarious behavior through settings.
 
 Presumably other collaboration/conference tools may also practice this behavior, so a callback was added to handle this change.
 
+## The glories of Mojave
+
+It turns out that some of my fellow MacOS users haven't upgraded to Mojave yet, and thus the whole changing the background colors doesn't
+actually show through their menubar and dock.  How quickly one forgets that those didn't used to be transparent...
+
+So, in with the OLD, and some extra options to add some text to make it more visible that you are unmuted... Which of course is the whole point.
+
+I've brought back the Microphone icon from the original Push2Talk.lua script, and added an option to add a Title/Text component to it.
+
 ## Installation
 
 This will create a ~/tmp temp file in your home directory and clone the repository into it, then move the Spoon to the ~/.hammerspoon/Spoons install directory.  Then add the base loading lines into your ~/.hammerspoon/init.lua file.  Once complete you can clean up the ~/tmp/global-mute-spoon directory as you see fit.
@@ -90,6 +99,8 @@ spoon.GlobalMute:configure({
   unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
   mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
   enforce_desired_state = true,
+  unmute_title = "<---- THEY CAN HEAR YOU -----",
+  mute_title = "<-- MUTE",
 })
 spoon.GlobalMute._logger.level = 3
 ```
@@ -97,6 +108,10 @@ spoon.GlobalMute._logger.level = 3
 The `enforced_desired_state` is the flag that handles when external forces make changes to the mute at a system level.  If set to
 `false` your background will change and the new mute state will be accepted.  If set to `true` the GlobalMute spoon will make a
 course correction and reset the system mute level on the device to what your current setting was.
+
+The mute_title and unmute_title text will appear to the right of the microphone icon in the menubar.  Hopefully making it easier to
+pickup on when you are actually unmuted.  If you don't want the mute_title text, simply don't provide that option to the configure
+routine.
 
 ## TODO / Thoughts
 
