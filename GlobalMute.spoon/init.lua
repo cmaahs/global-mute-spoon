@@ -109,6 +109,8 @@ function obj:mute(force)
     if self.mute_title ~= nil then
       local titletext = hs.styledtext.new(self.mute_title,{color=hs.drawing.color.hammerspoon.osx_green})
       self.mb:setTitle(titletext)
+    else
+      self.mb:setTitle(nil)
     end
     self.mb:setIcon(self.icon_muted)
     self.muted = true
@@ -137,6 +139,8 @@ function obj:unmute(force)
     if self.unmute_title ~= nil then
       local titletext = hs.styledtext.new(self.unmute_title,{color=hs.drawing.color.hammerspoon.osx_red})
       self.mb:setTitle(titletext)
+    else
+      self.mb:setTitle(nil)
     end
     self.mb:setIcon(self.icon_unmuted)
     self.muted = false
