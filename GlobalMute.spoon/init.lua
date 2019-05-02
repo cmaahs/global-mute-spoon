@@ -58,6 +58,10 @@ function setbackground(bgfile)
   end
 end
 
+function setmenutitle(menu, text)
+  menu:setTitle(text)
+end
+
 -- ### Utilities
 
 -- ## Public
@@ -102,6 +106,11 @@ function obj:mute(force)
 
   if is_changed then
     setbackground(self.mute_bg)
+    if self.mute_title ~= nil then
+      local titletext = hs.styledtext.new(self.mute_title,{color=hs.drawing.color.hammerspoon.osx_green})
+      self.mb:setTitle(titletext)
+    end
+    self.mb:setIcon(self.icon_muted)
     self.muted = true
   end
 
@@ -125,6 +134,11 @@ function obj:unmute(force)
 
   if is_changed then
     setbackground(self.unmute_bg)
+    if self.unmute_title ~= nil then
+      local titletext = hs.styledtext.new(self.unmute_title,{color=hs.drawing.color.hammerspoon.osx_red})
+      self.mb:setTitle(titletext)
+    end
+    self.mb:setIcon(self.icon_unmuted)
     self.muted = false
   end
 
@@ -174,7 +188,9 @@ end
 
 obj.hotkeys   = {}
 obj.unmute_bg = nil
+obj.unmute_title = nil
 obj.mute_bg   = nil
+obj.mute_title = nil
 obj.muted     = nil
 obj.enforce_state = false
 obj.red = hs.fnutils.copy(hs.alert.defaultStyle)
@@ -204,6 +220,69 @@ obj.yellow.textColor = {
   green = 0,
   blue  = 0
 }
+obj.mb = nil
+
+obj.icon_muted = hs.image.imageFromASCII(table.concat({
+  '................',
+  '..S..F....F.....',
+  '.R..............',
+  '................',
+  '................',
+  '................',
+  '.....A....B.....',
+  '................',
+  '.....H....H.....',
+  '.....F....F.....',
+  '..1..D....C..8..',
+  '..2..........7..',
+  '.......HH.......',
+  '...3........6...',
+  '......J..K....P.',
+  '.......45....Q..',
+  '................',
+  '.......ML.......'}, '\n'),
+  {{
+      strokeColor = {alpha = 1},
+      fillColor   = {alpha = 0},
+      strokeWidth = 2,
+      shouldClose = false,
+--        antialias = false
+  },
+  {
+      shouldClose = true
+  }}
+)
+obj.icon_unmuted = hs.image.imageFromASCII(table.concat({
+  '................',
+  '.....F....F.....',
+  '................',
+  '................',
+  '................',
+  '................',
+  '.....A....B.....',
+  '................',
+  '.....H....H.....',
+  '.....F....F.....',
+  '..1..D....C..8..',
+  '..2..........7..',
+  '.......HH.......',
+  '...3........6...',
+  '......J..K......',
+  '.......45.......',
+  '................',
+  '.......ML.......'}, '\n'),
+  {{
+      strokeColor = {alpha = 1},
+      fillColor   = {alpha = 0},
+      strokeWidth = 2,
+      shouldClose = false,
+--        antialias = false
+  },
+  {
+      shouldClose = true
+  }}
+)
+
 
 --- GlobalMute:bindHotkeys()
 --- Method
@@ -220,6 +299,8 @@ obj.yellow.textColor = {
 ---   unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
 ---   mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
 ---   enforce_desired_state = true,
+---   unmute_title = "---- THEY CAN HEAR YOU ----",
+---   mute_title = "MUTE",
 ---})
 --- spoon.GlobalMute:bindHotkeys({
 ---  unmute = {hyper, "u"},
@@ -271,13 +352,19 @@ function obj:configure(conf)
     if key == 'enforce_desired_state' then
       self.enforce_state = confitem
     end
+    if key == 'mute_title' then
+      self.mute_title = confitem
+    end
+    if key == 'unmute_title' then
+      self.unmute_title = confitem
+    end
   end
-  if self.mute_bg == nil then
-    self.mute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png'
-  end
-  if self.unmute_bg == nil then
-    self.unmute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png'
-  end
+  -- if self.mute_bg == nil then
+  --   self.mute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png'
+  -- end
+  -- if self.unmute_bg == nil then
+  --   self.unmute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png'
+  -- end
   self:mute(true)
   self.muted = true
 end
@@ -290,6 +377,9 @@ function obj:init()
   for _, device in pairs(hs.audiodevice.allInputDevices()) do
     device:watcherCallback(hs.fnutils.partial(self.microphone_changes, self)):watcherStart()
     logger.w("Setting up watcher for audio device ".. device:name())
+  end
+  if self.mb == nil then
+    self.mb = hs.menubar.new()
   end
 end
 
