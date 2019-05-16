@@ -27,6 +27,19 @@ way to stop this nefarious behavior through settings.
 
 Presumably other collaboration/conference tools may also practice this behavior, so a callback was added to handle this change.
 
+## Extra Special Note for SOCOCO users
+
+From the *this feature is for me* department.  Managing SOCOCO *and* any other Conferencing software becomes a huge "sound and mic"
+management nightmare.  Feeback loops, people talking on their personal web conference and the sound piping right into Sococo.  This
+becomes especially true when you start using a Global Mic Mute tool like this one.  Initially my thought was to send ALT-T and ALT-L
+to toggle both the sound and mic within Sococo, and while that can be done, one minor drawback is that the Sococo app becomes the
+focus window, and one major drawback of not being able to query what state Sococo sound and mic are in.  So I opted for the only
+solution that shouldn't really fail.  If you enable this feature through the *configure* call, when you toggle your mic ON, the spoon
+will check to see if you have Sococo open *and* check to see if you have more than the Zoom control app open.  If you don't run the
+Zoom control app, you may have to adjust the code to trigger on > 0 Zoom windows, rather than > 1.  In any case, if it detects you
+are running Sococo *and* more than 1 Zoom window, it simply sends a `kill` to the Sococo app.  Problem:Solved().  Hopefully others
+can use this as an example for killing Sococo when they run other Conferencing apps.
+
 ## The glories of Mojave
 
 It turns out that some of my fellow MacOS users haven't upgraded to Mojave yet, and thus the whole changing the background colors doesn't
@@ -74,11 +87,11 @@ else
     echo 'spoon.GlobalMute:bindHotkeys({ unmute = {lesshyper, "u"}, mute   = {lesshyper, "m"}, toggle = {hyper, "space"} })' >> ~/.hammerspoon/init.lua
 fi
 
-if grep -Fxq 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png", enforce_desired_state = true,})' ~/.hammerspoon/init.lua
+if grep -Fxq 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png", enforce_desired_state = true, stop_sococo_for_zoom  = true,})' ~/.hammerspoon/init.lua
 then
     echo "line already exists."
 else
-    echo 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png", enforce_desired_state = true,})' >> ~/.hammerspoon/init.lua
+    echo 'spoon.GlobalMute:configure({ unmute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png", mute_background = "file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png", enforce_desired_state = true, stop_sococo_for_zoom  = true,})' >> ~/.hammerspoon/init.lua
 fi
 ```
 
@@ -99,6 +112,7 @@ spoon.GlobalMute:configure({
   unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
   mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
   enforce_desired_state = true,
+  stop_sococo_for_zoom  = true,
   unmute_title = "<---- THEY CAN HEAR YOU -----",
   mute_title = "<-- MUTE",
 })

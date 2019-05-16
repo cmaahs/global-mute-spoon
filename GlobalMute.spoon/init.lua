@@ -62,6 +62,12 @@ function setmenutitle(menu, text)
   menu:setTitle(text)
 end
 
+function table_count(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
+
 -- ### Utilities
 
 -- ## Public
@@ -144,8 +150,29 @@ function obj:unmute(force)
     end
     self.mb:setIcon(self.icon_unmuted)
     self.muted = false
+    local zoom = hs.application.get'zoom.us'
+    if zoom then
+      local zoomwin = zoom:allWindows()
+      local wincount = table_count(zoomwin)
+      if wincount > 1 then
+        local sococo = hs.application.get'Sococo'
+        if sococo then
+          local sococowin = sococo:allWindows()
+          local socococount = table_count(sococowin)
+          if socococount > 0 then
+            if self.stop_sococo then
+              hs.alert('Closing Sococo', self.red)
+              sococo:kill()
+            else
+              hs.alert('Sococo RUNNING', self.red)
+              hs.alert('Sococo RUNNING', self.red)
+              hs.alert('Sococo RUNNING', self.red)
+            end
+          end
+        end
+      end
+    end
   end
-
   return is_changed
 end
 
@@ -196,6 +223,7 @@ obj.unmute_title = nil
 obj.mute_bg   = nil
 obj.mute_title = nil
 obj.muted     = nil
+obj.stop_sococo = false
 obj.enforce_state = false
 obj.red = hs.fnutils.copy(hs.alert.defaultStyle)
 obj.red.fillColor = {
@@ -303,6 +331,7 @@ obj.icon_unmuted = hs.image.imageFromASCII(table.concat({
 ---   unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
 ---   mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
 ---   enforce_desired_state = true,
+---   stop_sococo_for_zoom  = true,
 ---   unmute_title = "---- THEY CAN HEAR YOU ----",
 ---   mute_title = "MUTE",
 ---})
@@ -347,6 +376,9 @@ end
 function obj:configure(conf)
   logger.i("Set configuration for GlobalMute")
   for key,confitem in pairs(conf) do
+    if key == 'stop_sococo_for_zoom' then
+      self.stop_sococo = confitem
+    end
     if key == 'unmute_background' then
       self.unmute_bg = confitem
     end
