@@ -53,6 +53,8 @@ I've brought back the Microphone icon from the original Push2Talk.lua script, an
 
 This will create a ~/tmp temp file in your home directory and clone the repository into it, then move the Spoon to the ~/.hammerspoon/Spoons install directory.  Then add the base loading lines into your ~/.hammerspoon/init.lua file.  Once complete you can clean up the ~/tmp/global-mute-spoon directory as you see fit.
 
+- NOTE: The upgrade to Catalina from Mojave wiped out my `/Library/Desktop Pictures/Solid Colors` directory.  I simply restored them from time machine.  For those of you who are installing global-mute-spoon for the first time on Catalina, you'll have to come up with a replacement for the background color change.
+
 ```bash
 mkdir ~/tmp
 
