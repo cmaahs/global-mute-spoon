@@ -54,6 +54,7 @@ I've brought back the Microphone icon from the original Push2Talk.lua script, an
 This will create a ~/tmp temp file in your home directory and clone the repository into it, then move the Spoon to the ~/.hammerspoon/Spoons install directory.  Then add the base loading lines into your ~/.hammerspoon/init.lua file.  Once complete you can clean up the ~/tmp/global-mute-spoon directory as you see fit.
 
 - NOTE: The upgrade to Catalina from Mojave wiped out my `/Library/Desktop Pictures/Solid Colors` directory.  I simply restored them from time machine.  For those of you who are installing global-mute-spoon for the first time on Catalina, you'll have to come up with a replacement for the background color change.
+- UPDATE: Each Catalina patch is wiping out the `Solid Colors` directory files.  The directory exists, the jpg files just disappear.  At this point I'm guessing that they were not licensed by Apple, and they are taking steps to rectify.  Anyway you look at it, it seems odd.  I may generate my own "solid color" jpg files and just add them to the repository.
 
 ```bash
 mkdir ~/tmp
