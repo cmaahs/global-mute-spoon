@@ -49,11 +49,13 @@ package.path = package.path..";Spoons/".. ... ..".spoon/?.lua"
 
 -- ## Internal
 
-function setbackground(bgfile)
+function setbackground(bgfile, screens_to_change)
   if bgfile ~= nil then
     local screens = hs.screen.allScreens()
     for _, newScreen in ipairs(screens) do
-      newScreen:desktopImageURL(bgfile)
+      if string.find(screens_to_change, newScreen:name()) then
+        newScreen:desktopImageURL(bgfile)
+      end
     end
   end
 end
@@ -111,7 +113,7 @@ function obj:mute(force)
   end
 
   if is_changed then
-    setbackground(self.mute_bg)
+    setbackground(self.mute_bg, self.change_screens)
     if self.mute_title ~= nil then
       local titletext = hs.styledtext.new(self.mute_title,{color=hs.drawing.color.hammerspoon.osx_green})
       self.mb:setTitle(titletext)
@@ -141,7 +143,7 @@ function obj:unmute(force)
   end
 
   if is_changed then
-    setbackground(self.unmute_bg)
+    setbackground(self.unmute_bg, self.change_screens)
     if self.unmute_title ~= nil then
       local titletext = hs.styledtext.new(self.unmute_title,{color=hs.drawing.color.hammerspoon.osx_red})
       self.mb:setTitle(titletext)
@@ -223,6 +225,7 @@ obj.unmute_title = nil
 obj.mute_bg   = nil
 obj.mute_title = nil
 obj.muted     = nil
+obj.change_screens = nil
 obj.stop_sococo = false
 obj.enforce_state = false
 obj.red = hs.fnutils.copy(hs.alert.defaultStyle)
@@ -253,6 +256,11 @@ obj.yellow.textColor = {
   blue  = 0
 }
 obj.mb = nil
+
+local screens = hs.screen.allScreens()
+for _, newScreen in ipairs(screens) do
+    obj.change_screens = obj.change_screens ..",".. newScreen:name()
+end
 
 obj.icon_muted = hs.image.imageFromASCII(table.concat({
   '................',
@@ -394,6 +402,10 @@ function obj:configure(conf)
     if key == 'unmute_title' then
       self.unmute_title = confitem
     end
+    if key == 'change_screens' then
+      self.change_screens = confitem
+    end
+
   end
   -- if self.mute_bg == nil then
   --   self.mute_bg = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png'
