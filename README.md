@@ -118,6 +118,7 @@ spoon.GlobalMute:configure({
   stop_sococo_for_zoom  = true,
   unmute_title = "<---- THEY CAN HEAR YOU -----",
   mute_title = "<-- MUTE",
+  -- change_screens = "SCREENNAME1, SCREENNAME2"  -- This will only change the background of the specific screens.  string.find()
 })
 spoon.GlobalMute._logger.level = 3
 ```
