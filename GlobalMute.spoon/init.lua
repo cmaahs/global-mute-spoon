@@ -95,6 +95,7 @@ function obj:toggle()
     -- unmuted, please mute
     self:mute()
   end
+
 end
 
 --- GlobalMute:mute(force)
@@ -122,6 +123,10 @@ function obj:mute(force)
     end
     self.mb:setIcon(self.icon_muted)
     self.muted = true
+    -- if self.sococo then
+    --   local titletext = hs.styledtext.new('',{color=hs.drawing.color.hammerspoon.osx_red})
+    --   self.mbs:setTitle(titletext)
+    -- end
   end
 
   return is_changed
@@ -143,6 +148,14 @@ function obj:unmute(force)
   end
 
   if is_changed then
+    -- Stupid Webex detects the system level mute, and mutes the app
+    -- however, it doesn't UNMUTE when the system level unmutes
+    -- Just force it, I guess
+    baseproc = {hs.application.find("Cisco Webex Meetings")}
+    for _, app in pairs(baseproc) do
+      logger.d("Cisco Unmute Me".. app:name())
+        app:selectMenuItem({"Participant", "Unmute Me"})
+    end
     setbackground(self.unmute_bg, self.change_screens)
     if self.unmute_title ~= nil then
       local titletext = hs.styledtext.new(self.unmute_title,{color=hs.drawing.color.hammerspoon.osx_red})
@@ -152,15 +165,21 @@ function obj:unmute(force)
     end
     self.mb:setIcon(self.icon_unmuted)
     self.muted = false
+    -- if self.sococo then
+    --   local titletext = hs.styledtext.new('SOCOCO LISTENING ---->',{color=hs.drawing.color.hammerspoon.osx_red})
+    --   self.mbs:setTitle(titletext)
+    -- end
     local zoom = hs.application.get'zoom.us'
     if zoom then
       local zoomwin = zoom:allWindows()
       local wincount = table_count(zoomwin)
+      -- hs.alert('Zoom Windows '.. tostring(wincount))
       if wincount > 1 then
         local sococo = hs.application.get'Sococo'
         if sococo then
           local sococowin = sococo:allWindows()
           local socococount = table_count(sococowin)
+          -- hs.alert('Sococo Wins: '.. tostring(socococount))
           if socococount > 0 then
             if self.stop_sococo then
               hs.alert('Closing Sococo', self.red)
@@ -175,6 +194,7 @@ function obj:unmute(force)
       end
     end
   end
+
   return is_changed
 end
 
@@ -217,6 +237,33 @@ function obj:microphone_changes(device_uid, event_name, event_scope, event_eleme
   end
 end
 
+-- function obj:hush()
+--   local stack = hs.application.find('Sococo')
+--   if stack then
+--     local allWin = stack:allWindows()
+--     for i, win in pairs(allWin) do
+--       if not stack:isHidden() and win and win:subrole() == 'AXStandardWindow' then
+--           win:focus()
+--       end
+--     end
+--   end
+--   hs.eventtap.event.newKeyEvent("alt", "t", true):post()
+--   hs.eventtap.event.newKeyEvent("alt", "t", false):post()
+--   hs.eventtap.event.newKeyEvent("alt", "l", true):post()
+--   hs.eventtap.event.newKeyEvent("alt", "l", false):post()
+--   if self.sococo then
+--     if self.muted ~= true then
+--       local titletext = hs.styledtext.new('SOCOCO LISTENING ---->',{color=hs.drawing.color.hammerspoon.osx_red})
+--       self.mbs:setTitle(titletext)
+--     end
+--   else
+--     local titletext = hs.styledtext.new('',{color=hs.drawing.color.hammerspoon.osx_green})
+--     self.mbs:setTitle(titletext)
+--   end
+--   self.sococo = not self.sococo
+-- end
+
+
 -- ## Spoon mechanics (`bind`, `init`)
 
 obj.hotkeys   = {}
@@ -256,6 +303,7 @@ obj.yellow.textColor = {
   blue  = 0
 }
 obj.mb = nil
+-- obj.mbs = nil
 
 local screens = hs.screen.allScreens()
 for _, newScreen in ipairs(screens) do
@@ -339,7 +387,6 @@ obj.icon_unmuted = hs.image.imageFromASCII(table.concat({
 ---   unmute_background = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Red%20Orange.png',
 ---   mute_background   = 'file:///Library/Desktop%20Pictures/Solid%20Colors/Turquoise%20Green.png',
 ---   enforce_desired_state = true,
----   stop_sococo_for_zoom  = true,
 ---   unmute_title = "---- THEY CAN HEAR YOU ----",
 ---   mute_title = "MUTE",
 ---})
@@ -353,6 +400,19 @@ obj.icon_unmuted = hs.image.imageFromASCII(table.concat({
 ---
 function obj:bindHotkeys(mapping)
   logger.i("Bind Hotkeys for GlobalMute")
+
+  -- -- 'hush' hotkey
+  -- if mapping.hush then
+  --   -- if self.mbs == nil then
+  --   --   self.mbs = hs.menubar.new()
+  --   --   local titletext = hs.styledtext.new('SOCOCO LISTENING',{color=hs.drawing.color.hammerspoon.osx_red})
+  --   --   self.mbs:setTitle(titletext)
+  --   -- end
+  --   self.hotkeys[#self.hotkeys + 1] = hs.hotkey.bind(
+  --     mapping.hush[1],
+  --     mapping.hush[2],
+  --     function() self:hush() end)
+  -- end
 
   -- `unmute` hotkey
   if mapping.unmute then
@@ -415,6 +475,7 @@ function obj:configure(conf)
   -- end
   self:mute(true)
   self.muted = true
+  -- self.sococo = true
 end
 
 --- GlobalMute:init()
@@ -429,6 +490,9 @@ function obj:init()
   if self.mb == nil then
     self.mb = hs.menubar.new()
   end
+  -- if self.mbs == nil then
+  --   self.mbs = hs.menubar.new()
+  -- end
 end
 
 return obj
