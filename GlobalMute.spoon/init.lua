@@ -157,6 +157,10 @@ function obj:unmute(force)
         app:selectMenuItem({"Participant", "Unmute Me"})
     end
     setbackground(self.unmute_bg, self.change_screens)
+    local screens = hs.screen.allScreens()
+    for _, newScreen in ipairs(screens) do
+      hs.alert('UNMUTED', self.yellow, newScreen)
+    end
     if self.unmute_title ~= nil then
       local titletext = hs.styledtext.new(self.unmute_title,{color=hs.drawing.color.hammerspoon.osx_red})
       self.mb:setTitle(titletext)
@@ -216,7 +220,11 @@ function obj:microphone_changes(device_uid, event_name, event_scope, event_eleme
     if self.muted then
       if not is_synced then
         -- want muted, is now unmuted
-        hs.alert('UNMUTED Externally', self.red)
+        local screens = hs.screen.allScreens()
+        for _, newScreen in ipairs(screens) do
+          hs.alert('UNMUTED Externally', self.red, newScreen)
+        end
+
         if self.enforce_state then
           self:mute(true)
         else
@@ -226,7 +234,10 @@ function obj:microphone_changes(device_uid, event_name, event_scope, event_eleme
     else -- self.muted = false
       if not is_synced then
         -- want unmuted, now muted
-        hs.alert('MUTED Externally', self.yellow)
+        local screens = hs.screen.allScreens()
+        for _, newScreen in ipairs(screens) do
+          hs.alert('MUTED Externally', self.yellow, newScreen)
+        end
         if self.enforce_state then
           self:unmute(true)
         else
