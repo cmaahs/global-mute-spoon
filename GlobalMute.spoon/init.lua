@@ -53,7 +53,10 @@ function setbackground(bgfile, screens_to_change)
   if bgfile ~= nil then
     local screens = hs.screen.allScreens()
     for _, newScreen in ipairs(screens) do
+      logger.d("Screens to change: ".. screens_to_change)
+      logger.d("Changing Background: ".. newScreen:name())
       if string.find(screens_to_change, newScreen:name()) then
+        logger.d("Changing to: ".. bgfile )
         newScreen:desktopImageURL(bgfile)
       end
     end
@@ -105,10 +108,18 @@ function obj:mute(force)
   is_changed = force or false
   for _, device in pairs(hs.audiodevice.allInputDevices()) do
       is_muted = device:inputMuted()
-      logger.d("Mute Operation, Device Mute Status Was: ".. tostring(is_muted))
+      logger.d("Mute Operation, Device Mute Status Was: ".. tostring(is_muted) .." name is: ".. device:name())
 
       if not is_muted then
+          out_device = hs.audiodevice.findOutputByName(device:name())
+          default_out = hs.audiodevice.defaultOutputDevice()
           device:setInputMuted(true)
+          if out_device ~= nil then
+            if out_device:name() == default_out:name() then
+              logger.d("....Ensuring output is not muted".. tostring(out_volume))
+              out_device:setOutputMuted(false)
+            end
+          end
           is_changed = true
       end
   end
